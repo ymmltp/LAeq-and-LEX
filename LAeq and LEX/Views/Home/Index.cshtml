@@ -1,0 +1,301 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Home Page";
+}
+
+<div class="panel-default">
+    <div class="panel-heading">
+        <i class="fa fa-cogs"></i>
+        <label class="desc">LAeq</label>
+    </div>
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-lg-2 col-md-3 col-xs-3 col-sm-3 ">
+                <input id="eq-input" type="text" class="form-control" placeholder="输入设备编号" />
+            </div>
+            <div class="col-lg-2 col-xs-3 col-sm-3 col-md-3">
+                <div class='input-group date form_datetime set_date'>
+                    <input type='text' class="form-control" id='startdate' placeholder="选择开始日期" />
+                    <span class="input-group-addon">
+                        <span class="fa fa-calendar"></span>
+                    </span>
+                </div>
+            </div>
+            <div class="col-lg-2 col-xs-3 col-sm-3 col-md-3">
+                <div class='input-group date form_datetime set_date'>
+                    <input type='text' class="form-control" id='enddate' placeholder="选择结束日期" />
+                    <span class="input-group-addon">
+                        <span class="fa fa-calendar"></span>
+                    </span>
+                </div>
+            </div>
+            <div class="col-lg-2 col-xs-3 col-sm-3 col-md-3">
+                <button id="Searchbtn" class="btn btn-primary mybtn" type="button" onclick="Result_Table()">Search</button>
+            </div>
+    </div>
+</div>
+</div>
+<div class="panel-default">
+    <div class="panel-heading">
+        <i class="fa fa-cogs"></i>
+        <label class="desc">设置采样信息</label>
+    </div>
+    <div class="panel-body">
+        <div id="toolbar">
+            <button class="btn btn-success" onclick="$('#NewModal').modal('show')">New</button>
+        </div>
+        <table id="table" class="table table-hover"></table>
+    </div>
+</div>
+<div class="panel-default">
+    <div class="panel-heading">
+        <i class="fa fa-flag"></i>
+        <label class="desc">噪声分析结果</label>
+    </div>
+    <div class="panel-body">
+        <table id="tableresult" class="table table-hover"></table>
+    </div>
+</div>
+<div class="modal fade" id="NewModal" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content" style="width:400px">
+            <div class="modal-header">
+                <h5 class="modal-title"><b style="color:#5f9073;font-size:18px">新增规则</b></h5>
+            </div>
+            <div class="modal-body">
+                <div class="panel-default">
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-lg-3 col-md-3 col-xs-3 col-sm-3 ">
+                                <label for="interval-input" class="form-label text-right">采样时间:</label>
+                            </div>
+                            <div class="col-lg-9 col-md-9 col-xs-9 col-sm-9 ">
+                                <input id="interval-input" type="number" class="form-control" placeholder="采样时间(min)" />
+                            </div>
+                        </div>
+                        <div class="row" style="margin-top:10px">
+                            <div class="col-lg-3 col-md-3 col-xs-3 col-sm-3 ">
+                                <label for="starttime" class="form-label text-right">开始时间:</label>
+                            </div>
+                            <div class="col-lg-9 col-md-9 col-xs-9 col-sm-9 ">
+                                <div class='input-group date form_datetime set_time'>
+                                    <input type='text' class="form-control" id='starttime' placeholder="开始时间" />
+                                    <span class="input-group-addon">
+                                        <span class="fa fa-calendar"></span>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" style="margin-top:10px">
+                            <div class="col-lg-3 col-md-3 col-xs-3 col-sm-3 ">
+                                <label for="endtime" class="form-label text-right">结束时间:</label>
+                            </div>
+                            <div class="col-lg-9 col-md-9 col-xs-9 col-sm-9 ">
+                                <div class='input-group date form_datetime set_time'>
+                                    <input type='text' class="form-control" id='endtime' placeholder="结束时间" />
+                                    <span class="input-group-addon">
+                                        <span class="fa fa-calendar"></span>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="Add" class="btn btn-success" type="button" onclick="Add()">Submit</button>
+                <button id="Close" type="button" class="btn btn-danger" data-dismiss="modal" aria-label="Close">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    $(document).ready(function () {
+        Interval_Table();
+    })
+    $(".set_date").datetimepicker({
+        format: 'yyyy-mm-dd', //时间显示的格式
+        todayBtn: true, //一键选中今天的日期
+        pickerPosition: "bottom-left", //打开选择卡的位置
+        weekStart: 1, //周开始的星期：0-6 星期日-星期六
+        autoclose: true,//选好时间后自动关闭
+        startView: 2,
+        maxView: 4,
+        minView: 2,//显示的最小选项卡：0-4 hour,day,month,year,decade
+        language: 'zh-CN',
+    });
+    $(".set_time").datetimepicker({
+        format: 'hh:ii', //时间显示的格式
+        todayBtn: true, //一键选中今天的日期
+        pickerPosition: "bottom-left", //打开选择卡的位置
+        weekStart: 1, //周开始的星期：0-6 星期日-星期六
+        autoclose: true,//选好时间后自动关闭
+        startView: 1,
+        maxView: 1,
+        minView: 0,//显示的最小选项卡：0-4 hour,day,month,year,decade
+        language: 'zh-CN',
+    });
+    function Interval_Table() {
+        $('#table').bootstrapTable('destroy').bootstrapTable({
+            url:'/Setting/Get',
+            method: 'get',                      //请求方式（*）
+            toolbar: '#toolbar',                //工具按钮用哪个容器
+            striped: true,                      //是否显示行间隔色
+            cache: false,                       //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+            onEditableSave: function (field, row, oldValue, $el) {
+                $.ajax({
+                    type: "post",
+                    url: "/Editable/Edit",
+                    data: { strJson: JSON.stringify(row) },
+                    success: function (data, status) {
+                        if (status == "success") {
+                            alert("编辑成功");
+                        }
+                    },
+                    error: function () {
+                        alert("Error");
+                    },
+                    complete: function () {
+
+                    }
+                });
+            },
+            columns: [{
+                field: 'checked',
+                checkbox: true,
+                align: 'center',
+                valign: 'middle',
+            }, {
+                field: 'index',
+                title: '序号',
+                formatter: function (value, row, index) {
+                    return index + 1;
+                }
+            }, {
+                field: 'interval',
+                title: '采样时间(min)',
+                editable: true
+            }, {
+                field: 'start_time',
+                title: '开始时间',
+                editable: true
+            }, {
+                field: 'end_time',
+                title: '结束时间',
+                editable: true
+            }, {
+                field: 'during',
+                title: '工作时间(h)',
+            },   {
+                field: 'operator',
+                title: '操作',
+                align: 'center',
+                valign: 'middle',
+                width: '10%',
+                formatter: function (value, row, index) {
+                    return  '<a href="#editProject" data-toggle="modal" title="修改">' +
+                        '<i class="glyphicon glyphicon-pencil"></i> ' +
+                        '</a>' +
+                        '<a href="javascript:void(0)" title="删除">' +
+                        '<i class="glyphicon glyphicon-trash text-danger"></i> ' +
+                        '</a>';
+                },
+                events: {
+                    'click a[title=删除]': function (e, value, row, index) {
+                        if (confirm('此操作不可逆，请确认是否删除？')) {
+                            $.ajax();
+                        }
+                    },
+                    'click a[title=修改]': function (e, value, row, index) {
+                        // e.preventDefault();
+                        alert('click change button');
+                    },
+                }
+            }]
+        })
+    }
+    function Result_Table() {
+        var lists = $('#table').bootstrapTable('getSelections');
+        if (lists instanceof Array) {
+            $('#tableresult').bootstrapTable('destroy').bootstrapTable({
+                url: '/Setting/GetResult',
+                queryParams: {
+                    eq: $("#eq-input").val(),
+                    start: $("#startdate").val(),
+                    end: $("#enddate").val(),
+                    sets: JSON.stringify(lists),
+                },
+                method: 'get',                      //请求方式（*）
+                striped: true,                      //是否显示行间隔色
+                cache: false,                       //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+                pagination: true,                   //是否显示分页（*）
+                //search: true,                       //是否显示表格搜索，此搜索是客户端搜索，不会进服务端，所以，个人感觉意义不大
+                strictSearch: true,
+                showColumns: true,                  //是否显示所有的列
+                showRefresh: true,                  //是否显示刷新按钮
+                minimumCountColumns: 2,   //最少允许的列数
+                clickToSelect: true,                //是否启用点击选中行
+                columns: [{
+                    field: 'index',
+                    title: '序号',
+                    formatter: function (value, row, index) {
+                        return index + 1;
+                    }
+                }, {
+                    field: 'interval',
+                    title: '采样时间(min)',
+                }, {
+                    field: 'start_time',
+                    title: '开始时间',
+                }, {
+                    field: 'end_time',
+                    title: '结束时间',
+                }, {
+                    field: 'during',
+                    title: '工作时间(h)',
+                }, {
+                    field: 'laeq',
+                    title: '工作时间段内的等效声级(LAeq,T)',
+                }, {
+                    field: 'lex',
+                    title: 'T8小时等效(LEX,8H)',
+                }]
+            })
+        }
+    }
+    function Add() {
+            if ($("#interval-input").val() > $("#endtime").val()) {
+                var per = new Date('1997-01-01 ' + row.start_time);
+                var next = new Date('1997-01-02 ' + row.end_time)
+            } else {
+                var per = new Date('1997-01-01 ' + row.start_time);
+                var next = new Date('1997-01-01 ' + row.end_time)
+            }
+            let usedTime = next - per; // 相差的毫秒数 
+            let leavel = usedTime % (24 * 3600 * 1000); // 计算天数后剩余的时间
+            let hours = Math.floor(leavel / (3600 * 1000)); // 计算剩余的小时数
+        $.ajax({
+            url: '/Setting/Create',
+            type: 'POST',
+            data: {
+                interval: $("#interval-input").val(),
+                start_time: $("#starttime").val(),
+                end_time: $("#endtime").val(),
+                during:hours
+            },
+            success: function (data, status, xhr) {
+                alert(xhr.status + ":" + xhr.statusText);
+                $('#NewModal').modal('hide')
+                Interval_Table();
+            },
+            fail: function (err, status, xhr) {
+                alert(xhr.status + ":" + xhr.statusText);
+            },
+            error: function (err) {
+                alert(err.responseText);
+            }
+        }); 
+    }
+</script>

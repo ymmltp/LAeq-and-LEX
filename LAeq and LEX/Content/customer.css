@@ -1,0 +1,47 @@
+﻿body {
+}
+
+.card {
+    background-color: white;
+    width: 100%;
+    height: auto;
+    padding: 10px;
+    position: relative;
+    border: 1px #eee solid;
+    box-shadow: #ccc 3px 3px 13px;
+    border-radius: 10px;
+    text-align: center;
+    margin: 10px 5px;
+}
+
+.h-lg {
+    min-height: 200px;
+    height: auto;
+}
+
+.desc {
+    line-height: 2rem;
+    height: 20px;
+    font-size: 2rem;
+    font-weight: bold;
+    text-align: center;
+    color: #333333 !important;
+}
+
+.card-body {
+    height: 200px;
+    margin-top: 5px;
+    text-align: center;
+}
+
+.min-card-body {
+    height: 100px;
+    text-align: center;
+    overflow-x: hidden;
+}
+
+.card-info {
+    font-size: 48px;
+    font-weight: 800;
+    line-height: 100px;
+}
