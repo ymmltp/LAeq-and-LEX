@@ -45,7 +45,7 @@ namespace LAeq_and_LEX.Controllers
                         {
                             if (Convert.ToDouble(item.start_time.Substring(0, item.start_time.IndexOf(':'))) < Convert.ToDouble(item.end_time.Substring(0, item.start_time.IndexOf(':'))))
                             {
-                                for (DateTime newdate = sd; newdate <= ed; newdate = newdate.AddDays(1))
+                                for (DateTime newdate = sd; newdate < ed; newdate = newdate.AddDays(1))
                                 {
                                     laeqresult tmp = new laeqresult
                                     {
@@ -59,7 +59,7 @@ namespace LAeq_and_LEX.Controllers
                             }
                             else
                             {
-                                for (DateTime newdate = sd; newdate < ed; newdate = newdate.AddDays(1))
+                                for (DateTime newdate = sd; newdate < ed.AddDays(-1); newdate = newdate.AddDays(1))
                                 {
                                     laeqresult tmp = new laeqresult
                                     {
@@ -77,8 +77,9 @@ namespace LAeq_and_LEX.Controllers
                                                 where Convert.ToDateTime(i.dtime) > Convert.ToDateTime(item.start_time) &&
                                                 Convert.ToDateTime(i.dtime) < Convert.ToDateTime(item.end_time)
                                                 select  i.data).ToList() ;
-                            item.laeq = Calculate(item, query);
-                            item.lex = item.laeq + 10 * Math.Log(Convert.ToDouble(item.during) / 8, 10);
+                            double tmp0 = Calculate(item, query);
+                            item.laeq = tmp0 == 0 ? 0 : Math.Round(tmp0, 2);
+                            item.lex = tmp0 == 0 ? 0 : Math.Round(tmp0 + 10 * Math.Log(Convert.ToDouble(item.during) / 8, 10),2);
                         }
                         return Json(result, JsonRequestBehavior.AllowGet);
                     }
@@ -189,13 +190,19 @@ namespace LAeq_and_LEX.Controllers
         }
         public double Calculate(laeqresult paras, List<string> items)
         {
-            double sum = 0;
-            foreach (string i in items)
+            if (items.Count > 0)
             {
-                sum = Math.Pow(10, 0.1 * Convert.ToDouble(i));
+                double sum = 0;
+                foreach (string i in items)
+                {
+                    sum += Math.Pow(10, 0.1 * Convert.ToDouble(i));
+                }
+                double result = 10 * Math.Log(sum * Convert.ToDouble(paras.interval) / 60 / Convert.ToDouble(paras.during), 10);
+                return result;
             }
-            double result = 10 * Math.Log((sum * Convert.ToDouble(paras.interval / 60)) / Convert.ToDouble(paras.during), 10);
-            return result;
+            else {
+                return 0;
+            }
         }
     }
 }

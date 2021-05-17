@@ -30,6 +30,7 @@ namespace LAeq_and_LEX
                      "~/Content/bootstrap-select.min.css",
                       "~/Content/bootstrap-tabel.min.css",
                       "~/Content/bootstrap-datetimepicker.min.css",
+                      "~/Content/customer.css",
                       "~/Content/site.css"));
         }
     }
