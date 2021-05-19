@@ -119,3 +119,14 @@ a:hover, a:focus {
     border-top: none;
     position: relative;
 }
+
+.btn-success {
+    background-color: #96bb7c;
+    border-color: #449d44 /*#d1d9d9*/;
+}
+
+
+/*修改bootstrap table*/
+.loading-wrap {
+    display: none;
+}

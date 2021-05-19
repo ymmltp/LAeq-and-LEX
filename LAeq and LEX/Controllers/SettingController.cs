@@ -38,14 +38,15 @@ namespace LAeq_and_LEX.Controllers
                     List<setting> settingitems = Newtonsoft.Json.JsonConvert.DeserializeObject<List<setting>>(sets);
                     DateTime sd = Convert.ToDateTime(start);
                     DateTime ed = Convert.ToDateTime(end);
+                    string searched = ed.AddDays(1).ToString("yyyy-MM-dd");
                     List<laeqresult> result = new List<laeqresult>();
-                    List<serverData> rawData = Newtonsoft.Json.JsonConvert.DeserializeObject<List<serverData>>(GetWebApi(eq, start, end));
+                    List<serverData> rawData = Newtonsoft.Json.JsonConvert.DeserializeObject<List<serverData>>(GetWebApi(eq, start, searched));
                     if (rawData.Count > 0) {
                         foreach (setting item in settingitems)
                         {
                             if (Convert.ToDouble(item.start_time.Substring(0, item.start_time.IndexOf(':'))) < Convert.ToDouble(item.end_time.Substring(0, item.start_time.IndexOf(':'))))
                             {
-                                for (DateTime newdate = sd; newdate < ed; newdate = newdate.AddDays(1))
+                                for (DateTime newdate = sd; newdate <= ed; newdate = newdate.AddDays(1))
                                 {
                                     laeqresult tmp = new laeqresult
                                     {
@@ -59,7 +60,7 @@ namespace LAeq_and_LEX.Controllers
                             }
                             else
                             {
-                                for (DateTime newdate = sd; newdate < ed.AddDays(-1); newdate = newdate.AddDays(1))
+                                for (DateTime newdate = sd; newdate <= ed.AddDays(-1); newdate = newdate.AddDays(1))
                                 {
                                     laeqresult tmp = new laeqresult
                                     {

@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<parameters>
+  <parameter name="ehslaeq-Web.config Connection String" description="ehslaeq Connection String used in web.config by the application to access the database." defaultValue="server=cnwuxg0te01;user id=root;password=Jabil12345;persistsecurityinfo=True;database=ehs_laeq_db" tags="SqlConnectionString">
+    <parameterEntry kind="XmlFile" scope="D:\\source\\source\\LAeq\ and\ LEX\\LAeq\ and\ LEX\\obj\\Release\\Package\\PackageTmp\\Web\.config$" match="/configuration/connectionStrings/add[@name='ehslaeq']/@connectionString" />
+  </parameter>
+</parameters>

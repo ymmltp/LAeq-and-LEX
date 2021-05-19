@@ -1,20 +1,83 @@
 ﻿@{
     Layout = "~/Views/Shared/_Layout.cshtml";
-    ViewBag.Title = "Home Page";
+    ViewBag.Title = "首页";
 }
+
 <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
     <div class="panel-default" role="tab" id="headingTwo" style="margin-bottom: 10px;">
         <div class="panel-heading">
             <h4 class="panel-title">
-                <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">噪声评估系统</a>
+                @*<a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo"></a>*@
+                <label>噪声评估系统</label>
             </h4>
         </div>
-        <div id="collapseTwo" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingTwo">
+        @*<div id="collapseTwo" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingTwo">*@
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-lg-3 col-md-3 col-xs-3 col-sm-3 ">
+                    <input id="eq-input" type="text" class="form-control" placeholder="输入设备编号" />
+                </div>
+            </div>
+            @*</div>*@
+        </div>
+    </div>
+    <div class="panel-default" role="tab" id="headingOne" style="margin-bottom: 10px;">
+        <div class="panel-heading">
+            <h4 class="panel-title">
+                <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">采样信息</a>
+            </h4>
+        </div>
+        <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+            <div class="panel-body">
+                <div id="toolbar" style="margin-right:0px">
+                    <button class="btn btn-success" onclick="$('#NewModal').modal('show')">新建</button>
+                </div>
+                <table id="table" class="table table-hover"></table>
+            </div>
+        </div>
+    </div>
+    <div class="panel-default" role="tab" id="headingFour" style="margin-bottom: 10px;">
+        <div class="panel-heading">
+            <h4 class="panel-title">
+                <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseFour" aria-expanded="true" aria-controls="collapseFour">8h总览</a>
+            </h4>
+        </div>
+        <div id="collapseFour" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingFour">
             <div class="panel-body">
                 <div class="row">
-                    <div class="col-lg-3 col-md-3 col-xs-3 col-sm-3 ">
-                        <input id="eq-input" type="text" class="form-control" placeholder="输入设备编号" />
+                    <div class="col-lg-2 col-xs-3 col-sm-3 col-md-3">
+                        <div class='input-group date form_datetime set_month'>
+                            <input type='text' class="form-control" id='month' placeholder="选择月份" />
+                            <span class="input-group-addon">
+                                <span class="fa fa-calendar"></span>
+                            </span>
+                        </div>
                     </div>
+                    <div class="col-lg-2 col-xs-3 col-sm-3 col-md-3">
+                        <button id="lexbtn" class="btn btn-primary mybtn" type="button" onclick="Lex_Chart()">8h分析</button>
+                    </div>
+                </div>
+                <div id="lex_echart" style="width:100%;height:200px;"></div>
+            </div>
+        </div>
+    </div>
+    <div class="panel-default" role="tab" id="headingThree" style="margin-bottom: 10px;">
+        <div class="panel-heading">
+            <h4 class="panel-title">
+                <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="true" aria-controls="collapseThree">
+                    噪声分析
+                </a>
+            </h4>
+            <div class="row" style="margin-top:3px;">
+                <div class="col-lg-2"><label class="form-label text-right" style="font-size:18px;padding-top: 10px;padding-left: 3px;">等效声级计算公式：</label></div>
+                <div class="col-lg-4"><img src="~/img/laeq.gif" /></div>
+                <div class="col-lg-3"><label class="form-label text-right" style="font-size:18px;padding-top: 10px;float:right">8h等效声级计算公式：</label></div>
+                <div class="col-lg-3"><img src="~/img/lex.gif" /> </div>
+            </div>
+        </div>
+        <div id="collapseThree" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingThree">
+            <div class="panel-body">
+                <div class="row" id="toolbar1">
                     <div class="col-lg-2 col-xs-3 col-sm-3 col-md-3">
                         <div class='input-group date form_datetime set_date'>
                             <input type='text' class="form-control" id='startdate' placeholder="选择开始日期" />
@@ -32,38 +95,16 @@
                         </div>
                     </div>
                     <div class="col-lg-2 col-xs-3 col-sm-3 col-md-3">
-                        <button id="Searchbtn" class="btn btn-primary mybtn" type="button" onclick="Result_Table()">Search</button>
+                        <button id="Searchbtn" class="btn btn-primary mybtn" type="button" onclick="Result_Table()">噪声分析</button>
                     </div>
                 </div>
+                <table id="tableresult" class="table table-hover" data-toggle="table"></table>
             </div>
-        </div>
-        </div>
-    <div class="panel-default" role="tab" id="headingOne" style="margin-bottom: 10px;">
-        <div class="panel-heading">
-            <h4 class="panel-title">
-                <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">设置采样信息</a>
-            </h4>
-        </div>
-        <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
-            <div class="panel-body">
-                <div id="toolbar" style="margin-right:0px">
-                    <button class="btn btn-success"  onclick="$('#NewModal').modal('show')">New</button>
-                </div>
-                <table id="table" class="table table-hover"></table>
-            </div>
-        </div>
-    </div>
-    <div class="panel panel-default" stye>
-        <div class="panel-heading">
-            <h4 class="panel-title">
-                <label>噪声分析结果</label>
-            </h4>
-        </div>
-        <div class="panel-body">
-            <table id="tableresult" class="table table-hover"></table>
         </div>
     </div>
 </div>
+
+
 <div class="modal fade" id="NewModal" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static">
     <div class="modal-dialog" role="document">
         <div class="modal-content" style="width:400px">
@@ -111,8 +152,8 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button id="Add" class="btn btn-success" type="button" onclick="Add()">Submit</button>
-                <button id="Close" type="button" class="btn btn-danger" data-dismiss="modal" aria-label="Close">Cancel</button>
+                <button id="Add" class="btn btn-success" type="button" onclick="Add()">提交</button>
+                <button id="Close" type="button" class="btn btn-danger" data-dismiss="modal" aria-label="Close">关闭</button>
             </div>
         </div>
     </div>
@@ -164,238 +205,403 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button id="Editbtn" class="btn btn-success" type="button" onclick="Edit()">Submit</button>
-                <button id="Close" type="button" class="btn btn-danger" data-dismiss="modal" aria-label="Close">Cancel</button>
+                <button id="Editbtn" class="btn btn-success" type="button" onclick="Edit()">提交</button>
+                <button id="Close" type="button" class="btn btn-danger" data-dismiss="modal" aria-label="Close">关闭</button>
             </div>
         </div>
     </div>
 </div>
 
+<script src="~/Scripts/Extend/bootstrap-table-export.js"></script>
+<script src="~/Scripts/Extend/tableExport.min.js"></script>
+<script src="~/Scripts/Extend/FileSaver.min.js"></script>
+<script src="~/Scripts/Extend/xlsx.core.min.js"></script>
+<script src="~/Scripts/Customer/BasicFnc.js"></script>
+<script src="~/Scripts/echarts.js"></script>
 
-    <script>
-        $(document).ready(function () {
-            Interval_Table();
-        })
-        $(".set_date").datetimepicker({
-            format: 'yyyy-mm-dd', //时间显示的格式
-            todayBtn: true, //一键选中今天的日期
-            pickerPosition: "bottom-left", //打开选择卡的位置
-            weekStart: 1, //周开始的星期：0-6 星期日-星期六
-            autoclose: true,//选好时间后自动关闭
-            startView: 2,
-            maxView: 4,
-            minView: 2,//显示的最小选项卡：0-4 hour,day,month,year,decade
-            language: 'zh-CN',
-        });
-        $(".set_time").datetimepicker({
-            format: 'hh:ii', //时间显示的格式
-            todayBtn: true, //一键选中今天的日期
-            pickerPosition: "bottom-left", //打开选择卡的位置
-            weekStart: 1, //周开始的星期：0-6 星期日-星期六
-            autoclose: true,//选好时间后自动关闭
-            startView: 1,
-            maxView: 1,
-            minView: 0,//显示的最小选项卡：0-4 hour,day,month,year,decade
-            language: 'zh-CN',
-        });
-        function Interval_Table() {
-            $('#table').bootstrapTable('destroy').bootstrapTable({
-                url: '/Setting/Get',
-                method: 'get',                      //请求方式（*）
-                toolbar: '#toolbar',                //工具按钮用哪个容器
-                striped: true,                      //是否显示行间隔色
-                cache: false,                       //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
-                columns: [{
+<script>
+    $(document).ready(function () {
+        Interval_Table();
+    })
+    $(".set_date").datetimepicker({
+        format: 'yyyy-mm-dd', //时间显示的格式
+        todayBtn: true, //一键选中今天的日期
+        pickerPosition: "bottom-left", //打开选择卡的位置
+        weekStart: 1, //周开始的星期：0-6 星期日-星期六
+        autoclose: true,//选好时间后自动关闭
+        startView: 2,
+        maxView: 4,
+        minView: 2,//显示的最小选项卡：0-4 hour,day,month,year,decade
+        language: 'zh-CN',
+    });
+    $(".set_time").datetimepicker({
+        format: 'hh:ii', //时间显示的格式
+        todayBtn: true, //一键选中今天的日期
+        pickerPosition: "bottom-left", //打开选择卡的位置
+        weekStart: 1, //周开始的星期：0-6 星期日-星期六
+        autoclose: true,//选好时间后自动关闭
+        startView: 1,
+        maxView: 1,
+        minView: 0,//显示的最小选项卡：0-4 hour,day,month,year,decade
+        language: 'zh-CN',
+    });
+    $(".set_month").datetimepicker({
+        format: 'yyyy-mm', //时间显示的格式
+        todayBtn: true, //一键选中今天的日期
+        pickerPosition: "bottom-left", //打开选择卡的位置
+        weekStart: 1, //周开始的星期：0-6 星期日-星期六
+        autoclose: true,//选好时间后自动关闭
+        startView: 3,
+        maxView: 3,
+        minView: 3,//显示的最小选项卡：0-4 hour,day,month,year,decade
+        language: 'zh-CN',
+    });
+    function Interval_Table() {
+        $('#table').bootstrapTable('destroy').bootstrapTable({
+            url: '/Setting/Get',
+            method: 'get',                      //请求方式（*）
+            toolbar: '#toolbar',                //工具按钮用哪个容器
+            striped: true,                      //是否显示行间隔色
+            cache: false,                       //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+            columns: [{
                     field: 'checked',
                     checkbox: true,
                     align: 'center',
                     valign: 'middle',
-                }, {
-                    field: 'index',
-                    title: '序号',
                     formatter: function (value, row, index) {
-                        return index + 1;
+                        return {
+                            checked: true//设置选中
+                        };
                     }
                 }, {
-                    field: 'interval',
-                    title: '采样时间(min)',
-                }, {
-                    field: 'start_time',
-                    title: '开始时间',
-                }, {
-                    field: 'end_time',
-                    title: '结束时间',
-                }, {
-                    field: 'during',
-                    title: '工作时间(h)',
-                }, {
-                    field: 'operator',
-                    title: '操作',
-                    align: 'center',
-                    valign: 'middle',
-                    width: '10%',
-                    formatter: function (value, row, index) {
-                        return '<a href="#editProject" data-toggle="modal" title="edit">' +
-                            '<i class="glyphicon glyphicon-pencil"></i> ' +
-                            '</a>' +
-                            '<a href="javascript:void(0)" title="delete">' +
-                            '<i class="glyphicon glyphicon-trash text-danger"></i> ' +
-                            '</a>';
+                field: 'index',
+                title: '序号',
+                formatter: function (value, row, index) {
+                    return index + 1;
+                }
+            }, {
+                field: 'interval',
+                title: '采样时间(min)',
+            }, {
+                field: 'start_time',
+                title: '开始时间',
+            }, {
+                field: 'end_time',
+                title: '结束时间',
+            }, {
+                field: 'during',
+                title: '工作时间(h)',
+            }, {
+                field: 'operator',
+                title: '操作',
+                align: 'center',
+                valign: 'middle',
+                width: '10%',
+                formatter: function (value, row, index) {
+                    return '<a href="#editProject" data-toggle="modal" title="edit" style="display: table-cell;">' +
+                        '<i class="glyphicon glyphicon-pencil"></i> ' +
+                        '</a>' +
+                        '<a href="javascript:void(0)" title="delete" style="display: table-cell;">' +
+                        '<i class="glyphicon glyphicon-trash text-danger"></i> ' +
+                        '</a>';
+                },
+                events: {
+                    'click a[title=delete]': function (e, value, row, index) {
+                        if (confirm('此操作不可逆，请确认是否删除')) {
+                            $.ajax({
+                                url: '/Setting/Delete',
+                                type: 'GET',
+                                data: {
+                                    id: row.id
+                                },
+                                success: function (data, status, xhr) {
+                                    alert(xhr.status + ":" + xhr.statusText);
+                                    Interval_Table();
+                                },
+                                fail: function (err, status, xhr) {
+                                    alert(xhr.status + ":" + xhr.statusText);
+                                },
+                                error: function (err) {
+                                    alert(err.responseText);
+                                }
+                            });
+                        }
                     },
-                    events: {
-                        'click a[title=delete]': function (e, value, row, index) {
-                            if (confirm('此操作不可逆，请确认是否删除')) {
-                                $.ajax({
-                                    url: '/Setting/Delete',
-                                    type: 'GET',
-                                    data: {
-                                        id: row.id
-                                    },
-                                    success: function (data, status, xhr) {
-                                        alert(xhr.status + ":" + xhr.statusText);
-                                        Interval_Table();
-                                    },
-                                    fail: function (err, status, xhr) {
-                                        alert(xhr.status + ":" + xhr.statusText);
-                                    },
-                                    error: function (err) {
-                                        alert(err.responseText);
-                                    }
-                                });
+                    'click a[title=edit]': function (e, value, row, index) {
+                        var editmodal = $("#EditModal");
+                        $("#interval-edit").val(row.interval);
+                        $("#editstarttime").val(row.start_time);
+                        $("#editendtime").val(row.end_time);
+                        editmodal.attr("data-id", row.id);
+                        editmodal.modal("show");
+                    },
+                }
+            }]
+        })
+    }
+    function Result_Table() {
+        if ($("#eq-input").val() == "") {
+            alert("请填写设备编号");
+        } else if ($("#startdate").val() == "" || $("#enddate").val() == "") {
+            alert("请选择采样时间");
+        } else {
+            var lists = $('#table').bootstrapTable('getSelections');
+            if (lists.length <= 0) {
+                alert("请选择采样规则");
+            }
+            else {
+                if (lists instanceof Array) {
+                    $('#tableresult').bootstrapTable('destroy').bootstrapTable({
+                        url: '/Setting/GetResult',
+                        queryParams: {
+                            eq: $("#eq-input").val(),
+                            start: $("#startdate").val(),
+                            end: $("#enddate").val(),
+                            sets: JSON.stringify(lists),
+                        },
+                        toolbar: '#toolbar1',       
+                        method: 'get',                      //请求方式（*）
+                        striped: true,                      //是否显示行间隔色
+                        cache: false,                       //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+                        pagination: true,                //是否显示分页（*）
+                        pageSize: 5,                        //每页初始显示的条数
+                        pageList: [5, 10, 15, 20, 25],
+                        //strictSearch: true,
+                        showColumns: true,                  //是否显示所有的列
+                        minimumCountColumns: 2,   //最少允许的列数
+                        showToggle: true,
+                        clickToSelect: true,                //是否启用点击选中行
+                        columns: [{
+                            field: 'index',
+                            title: '序号',
+                            formatter: function (value, row, index) {
+                                return index + 1;
+                            }
+                        }, {
+                            field: 'interval',
+                            title: '采样时间(min)',
+                        }, {
+                            field: 'start_time',
+                            title: '开始时间',
+                        }, {
+                            field: 'end_time',
+                            title: '结束时间',
+                        }, {
+                            field: 'during',
+                            title: '工作时间(h)',
+                        }, {
+                            field: 'laeq',
+                            title: '工作时间段内的等效声级(LAeq,T)',
+                        }, {
+                            field: 'lex',
+                            title: 'T8小时等效(LEX,8H)',
+                        }],
+                        showExport: function (row,index) {
+                            var sUserAgent = navigator.userAgent.toLowerCase();
+                            var bIsIpad = sUserAgent.match(/ipad/i) == "ipad";
+                            var bIsIphoneOs = sUserAgent.match(/iphone os/i) == "iphone os";
+                            var bIsMidp = sUserAgent.match(/midp/i) == "midp";
+                            var bIsUc7 = sUserAgent.match(/rv:1.2.3.4/i) == "rv:1.2.3.4";
+                            var bIsUc = sUserAgent.match(/ucweb/i) == "ucweb";
+                            var bIsAndroid = sUserAgent.match(/android/i) == "android";
+                            var bIsCE = sUserAgent.match(/windows ce/i) == "windows ce";
+                            var bIsWM = sUserAgent.match(/windows mobile/i) == "windows mobile";
+                            if (bIsIpad || bIsIphoneOs || bIsMidp || bIsUc7 || bIsUc || bIsAndroid || bIsCE || bIsWM) {
+                                return false;
+                            } else {
+                                return true;
                             }
                         },
-                        'click a[title=edit]': function (e, value, row, index) {
-                            var editmodal = $("#EditModal");
-                            $("#interval-edit").val(row.interval);
-                            $("#editstarttime").val(row.start_time);
-                            $("#editendtime").val(row.end_time);
-                            editmodal.attr("data-id", row.id);
-                            editmodal.modal("show");
+                        exportDataType: "all", //basic', 'all', 'selected'.
+                        exportTypes: ['csv','excel', 'xlsx'], //导出类型
+                        exportOptions: {
+                            fileName: '噪声评估分析表', //文件名称设置
+                            worksheetName: 'Sheet1', //表格工作区名称
+                            tableName: 'Laeq&Lex',
+                            excelstyles: ['background-color', 'color', 'font-size', 'font-weight'],
                         },
-                    }
-                }]
-            })
+                    })
+                }
+            }
         }
-        function Result_Table() {
+    }
+    function Lex_Chart() {
+        if ($("#eq-input").val() == "") {
+            alert("请填写设备编号");
+        } else {
             var lists = $('#table').bootstrapTable('getSelections');
-            if (lists instanceof Array) {
-                $('#tableresult').bootstrapTable('destroy').bootstrapTable({
-                    url: '/Setting/GetResult',
-                    queryParams: {
-                        eq: $("#eq-input").val(),
-                        start: $("#startdate").val(),
-                        end: $("#enddate").val(),
-                        sets: JSON.stringify(lists),
-                    },
-                    method: 'get',                      //请求方式（*）
-                    striped: true,                      //是否显示行间隔色
-                    cache: false,                       //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
-                    pagination: true,                //是否显示分页（*）
-                    //sortable: true,                 //排序开启
-                    //search: true,                      //是否显示表格搜索，此搜索是客户端搜索，不会进服务端，所以，个人感觉意义不大
-                    strictSearch: true,
-                    showColumns: true,                  //是否显示所有的列
-                    showRefresh: true,                  //是否显示刷新按钮
-                    minimumCountColumns: 2,   //最少允许的列数
-                    clickToSelect: true,                //是否启用点击选中行
-                    columns: [{
-                        field: 'index',
-                        title: '序号',
-                        formatter: function (value, row, index) {
-                            return index + 1;
-                        }
-                    }, {
-                        field: 'interval',
-                        title: '采样时间(min)',
-                    }, {
-                        field: 'start_time',
-                        title: '开始时间',
-                        //sortable: true,
-                    }, {
-                        field: 'end_time',
-                        title: '结束时间',
-                    }, {
-                        field: 'during',
-                        title: '工作时间(h)',
-                        //sortable: true,
-                    }, {
-                        field: 'laeq',
-                        title: '工作时间段内的等效声级(LAeq,T)',
-                        //sortable: true,
-                    }, {
-                        field: 'lex',
-                        title: 'T8小时等效(LEX,8H)',
-                        //sortable: true,
-                    }]
+            if (lists.length <= 0) {
+                alert("请选择采样规则");
+            } else {
+                var starttime = $("#month").val();
+                var endtime = $("#month").val();
+                if (starttime == "") {
+                    var date = new Date();
+                    var month = parseInt(date.getMonth() + 1) < 10 ? '0' + parseInt(date.getMonth() + 1) : parseInt(date.getMonth() + 1);
+                    starttime = date.getFullYear() + '-' + month + '-' + '01'
+                    var lastday = new Date(new Date(date.getFullYear(), month, 1) - 24 * 60 * 60 * 1000).getDate();
+                    endtime = date.getFullYear() + '-' + month + '-' + lastday;
+                } else {
+                    var date = new Date(starttime+"-01");
+                    var month = parseInt(date.getMonth() + 1) < 10 ? '0' + parseInt(date.getMonth() + 1) : parseInt(date.getMonth() + 1);
+                    starttime = date.getFullYear() + '-' + month + '-' + '01'
+                    var lastday = new Date(new Date(date.getFullYear(), month, 1) - 24 * 60 * 60 * 1000).getDate();
+                    endtime = date.getFullYear() + '-' + month + '-' + lastday;
+                }
+               var lex_Chart = echarts.init(document.getElementById('lex_echart'));
+                getData('/Setting/GetResult', {
+                    eq: $("#eq-input").val(),
+                    start: starttime,
+                    end: endtime,
+                    sets: JSON.stringify(lists),
                 })
-            }
-        }
-        function Add() {
-            if ($("#starttime").val() > $("#endtime").val()) {
-                var per = new Date('1997-01-01 ' + $("#starttime").val());
-                var next = new Date('1997-01-02 ' + $("#endtime").val())
-            } else {
-                var per = new Date('1997-01-01 ' + $("#starttime").val());
-                var next = new Date('1997-01-01 ' + $("#endtime").val())
-            }
-            let usedTime = next - per; // 相差的毫秒数
-            let leavel = usedTime % (24 * 3600 * 1000); // 计算天数后剩余的时间
-            let hours = Math.floor(leavel / (3600 * 1000)); // 计算剩余的小时数
-            $.ajax({
-                url: '/Setting/Create',
-                type: 'POST',
-                data: {
-                    interval: $("#interval-input").val(),
-                    start_time: $("#starttime").val(),
-                    end_time: $("#endtime").val(),
-                    during: hours
-                },
-                success: function (data, status, xhr) {
-                    $('#NewModal').modal('hide');
-                    alert(xhr.status + ":" + xhr.statusText);
-                    Interval_Table();
-                },
-                fail: function (err, status, xhr) {
-                    alert(xhr.status + ":" + xhr.statusText);
-                },
-                error: function (err) {
-                    alert(err.responseText);
-                }
-            });
-        }
-        function Edit() {
-            if ($("#editstarttime").val() > $("#editendtime").val()) {
-                var per = new Date('1997-01-01 ' + $("#editstarttime").val());
-                var next = new Date('1997-01-02 ' + $("#editendtime").val())
-            } else {
-                var per = new Date('1997-01-01 ' + $("#editstarttime").val());
-                var next = new Date('1997-01-01 ' + $("#editendtime").val())
-            }
-            let usedTime = next - per; // 相差的毫秒数
-            let leavel = usedTime % (24 * 3600 * 1000); // 计算天数后剩余的时间
-            let hours = Math.floor(leavel / (3600 * 1000)); // 计算剩余的小时数
-            $.ajax({
-                url: '/Setting/Edit',
-                type: 'POST',
-                data: {
-                    id: $("#EditModal").attr("data-id"),
-                    interval: $("#interval-edit").val(),
-                    start_time: $("#editstarttime").val(),
-                    end_time: $("#editendtime").val(),
-                    during: hours
-                },
-                success: function (data, status, xhr) {
-                    $('#EditModal').modal('hide');
-                    alert(xhr.status + ":" + xhr.statusText);
-                    Interval_Table();
-                },
-                fail: function (err, status, xhr) {
-                    alert(xhr.status + ":" + xhr.statusText);
-                },
-                error: function (err) {
-                    alert(err.responseText);
-                }
-            });
-        }
+                    .then((res) => {
+                        console.log(res);
+                        //var Arraydate = new Array;            
+                        //var MonData = [];
+                        //var EveData = [];
+                        //for (var i in res) {
+                        //    let sd = i.start_time.subString(0, i.start_time.indexOf(" "));
+                        //    let ed = i.end_time.subString(0, i.end_time.indexOf(" "));
+                        //    if (sd == ed) {
+                        //        if (Arraydate.contains(sd)) {
 
-    </script>
+                        //        }
+                        //        Arraydate.Add(sd);
+                        //        MonData.Add(i.lex);
+                        //    } else {
+                        //        if (Arraydate.contains(sd)) {
+
+                        //        }
+                        //        Arraydate.Add(sd);
+                        //        EveData.Add(i.lex);
+                        //    }                        
+                        //}
+                        //var obj = [];
+                        //for (var key in res[0]) {
+                        //    var i = {
+                        //        name: key,
+                        //        value: res[0][key]
+                        //    };
+                        //    obj.push(i);
+                        //}
+                        //return (obj);
+                    })
+                    //.then((res) => {
+                    //    option = {
+                    //        color: ['#61a0a8', '#2f4554', '#c23531', '#d48265',],
+                    //        title: {
+                    //            text: 'Current Complete Rate',
+                    //            left: 'center',
+                    //            color: '#5D5F63',
+                    //        },
+                    //        tooltip: {
+                    //            trigger: 'item',
+                    //            formatter: '{a} <br/>{b} : {c} ({d}%)'
+                    //        },
+                    //        legend: {
+                    //            orient: 'vertical',  //horizontal,
+                    //            right: '10px',
+                    //            top: '35px',
+                    //            data: ['OnTime', 'Warning', 'OverDue']
+                    //        },
+                    //        series: [
+                    //            {
+                    //                name: '详情',
+                    //                type: 'pie',
+                    //                radius: '60%',
+                    //                center: ['50%', '60%'],
+                    //                label: {
+                    //                    //position: 'inner',
+                    //                    formatter: '{b}\n{d}%',
+
+                    //                },
+                    //                data: res,
+                    //                emphasis: {
+                    //                    itemStyle: {
+                    //                        shadowBlur: 10,
+                    //                        shadowOffsetX: 0,
+                    //                        shadowColor: 'rgba(0, 0, 0, 0.5)'
+                    //                    }
+                    //                }
+                    //            }
+                    //        ]
+                    //    };
+                    //    lex_Chart.setOption(option);
+                    //})
+                    //.catch((err) => {
+                    //    var errInfo = '<div class="desc">No Data</div>';
+                    //    errInfo += '<div class="card-body">' + err + '</div >';
+                    //    $("#lex_echart").html(errInfo);
+                    //});
+            }
+        }
+    }
+    function Add() {
+        if ($("#starttime").val() > $("#endtime").val()) {
+            var per = new Date('1997-01-01 ' + $("#starttime").val());
+            var next = new Date('1997-01-02 ' + $("#endtime").val())
+        } else {
+            var per = new Date('1997-01-01 ' + $("#starttime").val());
+            var next = new Date('1997-01-01 ' + $("#endtime").val())
+        }
+        let usedTime = next - per; // 相差的毫秒数
+        let leavel = usedTime % (24 * 3600 * 1000); // 计算天数后剩余的时间
+        let hours = Math.floor(leavel / (3600 * 1000)); // 计算剩余的小时数
+        $.ajax({
+            url: '/Setting/Create',
+            type: 'POST',
+            data: {
+                interval: $("#interval-input").val(),
+                start_time: $("#starttime").val(),
+                end_time: $("#endtime").val(),
+                during: hours
+            },
+            success: function (data, status, xhr) {
+                $('#NewModal').modal('hide');
+                alert(xhr.status + ":" + xhr.statusText);
+                Interval_Table();
+            },
+            fail: function (err, status, xhr) {
+                alert(xhr.status + ":" + xhr.statusText);
+            },
+            error: function (err) {
+                alert(err.responseText);
+            }
+        });
+    }
+    function Edit() {
+        if ($("#editstarttime").val() > $("#editendtime").val()) {
+            var per = new Date('1997-01-01 ' + $("#editstarttime").val());
+            var next = new Date('1997-01-02 ' + $("#editendtime").val())
+        } else {
+            var per = new Date('1997-01-01 ' + $("#editstarttime").val());
+            var next = new Date('1997-01-01 ' + $("#editendtime").val())
+        }
+        let usedTime = next - per; // 相差的毫秒数
+        let leavel = usedTime % (24 * 3600 * 1000); // 计算天数后剩余的时间
+        let hours = Math.floor(leavel / (3600 * 1000)); // 计算剩余的小时数
+        $.ajax({
+            url: '/Setting/Edit',
+            type: 'POST',
+            data: {
+                id: $("#EditModal").attr("data-id"),
+                interval: $("#interval-edit").val(),
+                start_time: $("#editstarttime").val(),
+                end_time: $("#editendtime").val(),
+                during: hours
+            },
+            success: function (data, status, xhr) {
+                $('#EditModal').modal('hide');
+                alert(xhr.status + ":" + xhr.statusText);
+                Interval_Table();
+            },
+            fail: function (err, status, xhr) {
+                alert(xhr.status + ":" + xhr.statusText);
+            },
+            error: function (err) {
+                alert(err.responseText);
+            }
+        });
+    }
+</script>
