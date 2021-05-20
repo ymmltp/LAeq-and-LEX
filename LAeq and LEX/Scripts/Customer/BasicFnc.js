@@ -4,8 +4,7 @@ function getData(url, para = null) {
         $.ajax({
             url: url,
             data: para,
-            type: "GET",
-            dataType: "json",         
+            type: "GET",           
             success: function (data, status, xhr) {
                 if (xhr.status === 200) {
                     resolve(data);
@@ -30,7 +29,6 @@ function getDataWithArray(url, para = null) {
             data: para,
             type: "GET",
             traditional: true,
-            dataType: "json",
             success: function (data, status, xhr) {
                 resolve(data);
             },

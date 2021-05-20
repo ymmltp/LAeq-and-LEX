@@ -57,7 +57,7 @@
                         <button id="lexbtn" class="btn btn-primary mybtn" type="button" onclick="Lex_Chart()">8h分析</button>
                     </div>
                 </div>
-                <div id="lex_echart" style="width:100%;height:200px;"></div>
+                <div id="lex_echart" style="width:100%;height:380px;"></div>
             </div>
         </div>
     </div>
@@ -439,16 +439,26 @@
                     var date = new Date();
                     var month = parseInt(date.getMonth() + 1) < 10 ? '0' + parseInt(date.getMonth() + 1) : parseInt(date.getMonth() + 1);
                     starttime = date.getFullYear() + '-' + month + '-' + '01'
-                    var lastday = new Date(new Date(date.getFullYear(), month, 1) - 24 * 60 * 60 * 1000).getDate();
-                    endtime = date.getFullYear() + '-' + month + '-' + lastday;
+                    var nextmonth = parseInt(date.getMonth() + 2) < 10 ? '0' + parseInt(date.getMonth() + 2) : parseInt(date.getMonth() + 2);
+                    endtime = date.getFullYear() + '-' + nextmonth + '-' + '01';
                 } else {
                     var date = new Date(starttime+"-01");
                     var month = parseInt(date.getMonth() + 1) < 10 ? '0' + parseInt(date.getMonth() + 1) : parseInt(date.getMonth() + 1);
                     starttime = date.getFullYear() + '-' + month + '-' + '01'
-                    var lastday = new Date(new Date(date.getFullYear(), month, 1) - 24 * 60 * 60 * 1000).getDate();
-                    endtime = date.getFullYear() + '-' + month + '-' + lastday;
+                    var nextmonth = parseInt(date.getMonth() + 2) < 10 ? '0' + parseInt(date.getMonth() + 2) : parseInt(date.getMonth() + 2);
+                    endtime = date.getFullYear() + '-' + nextmonth + '-' + '01';
                 }
-               var lex_Chart = echarts.init(document.getElementById('lex_echart'));
+                let lex_Chart = echarts.getInstanceByDom(document.getElementById('lex_echart')); 
+                if (lex_Chart == null) { // 如果不存在，就进行初始化。
+                    lex_Chart = echarts.init(document.getElementById('lex_echart'));
+                }
+                lex_Chart.showLoading({
+                    text: '数据加载中...',
+                    color: '#c23531',
+                    textColor: '#333',
+                    maskColor: 'rgba(255, 255, 255, 0)',
+                    zlevel: 0
+                });
                 getData('/Setting/GetResult', {
                     eq: $("#eq-input").val(),
                     start: starttime,
@@ -456,84 +466,88 @@
                     sets: JSON.stringify(lists),
                 })
                     .then((res) => {
-                        console.log(res);
-                        //var Arraydate = new Array;            
-                        //var MonData = [];
-                        //var EveData = [];
-                        //for (var i in res) {
-                        //    let sd = i.start_time.subString(0, i.start_time.indexOf(" "));
-                        //    let ed = i.end_time.subString(0, i.end_time.indexOf(" "));
-                        //    if (sd == ed) {
-                        //        if (Arraydate.contains(sd)) {
-
-                        //        }
-                        //        Arraydate.Add(sd);
-                        //        MonData.Add(i.lex);
-                        //    } else {
-                        //        if (Arraydate.contains(sd)) {
-
-                        //        }
-                        //        Arraydate.Add(sd);
-                        //        EveData.Add(i.lex);
-                        //    }                        
-                        //}
-                        //var obj = [];
-                        //for (var key in res[0]) {
-                        //    var i = {
-                        //        name: key,
-                        //        value: res[0][key]
-                        //    };
-                        //    obj.push(i);
-                        //}
-                        //return (obj);
+                        var legendArray = [];
+                        var seriesArray = [];
+                        var dateArray = [];
+                        for (var a in lists) {
+                            legendArray.push(lists[a].start_time + '-' + lists[a].end_time);
+                            var tmp = {
+                                name: lists[a].start_time + '-' + lists[a].end_time,
+                                type: 'line',
+                                label: {
+                                    show: true,
+                                    fontSize: 9,
+                                    formatter: '{c}',
+                                },
+                                data: []
+                            }
+                            seriesArray.push(tmp);
+                        }
+                        for (var i in res) {
+                            let sd = res[i].start_time.substring(res[i].start_time.lastIndexOf("-")+1, res[i].start_time.indexOf(" "));
+                            let datatype = res[i].start_time.substring(res[i].start_time.indexOf(" ") + 1) + "-" + res[i].end_time.substring(res[i].end_time.indexOf(" ")+1);
+                            if (!dateArray.includes(sd))
+                                dateArray.push(sd);
+                            for (var j in seriesArray) {
+                                if (seriesArray[j].name === datatype)
+                                    seriesArray[j].data.push(res[i].lex);
+                            }
+                        }
+                        return ({ legend: legendArray, xAxis: dateArray, value: seriesArray})
                     })
-                    //.then((res) => {
-                    //    option = {
-                    //        color: ['#61a0a8', '#2f4554', '#c23531', '#d48265',],
-                    //        title: {
-                    //            text: 'Current Complete Rate',
-                    //            left: 'center',
-                    //            color: '#5D5F63',
-                    //        },
-                    //        tooltip: {
-                    //            trigger: 'item',
-                    //            formatter: '{a} <br/>{b} : {c} ({d}%)'
-                    //        },
-                    //        legend: {
-                    //            orient: 'vertical',  //horizontal,
-                    //            right: '10px',
-                    //            top: '35px',
-                    //            data: ['OnTime', 'Warning', 'OverDue']
-                    //        },
-                    //        series: [
-                    //            {
-                    //                name: '详情',
-                    //                type: 'pie',
-                    //                radius: '60%',
-                    //                center: ['50%', '60%'],
-                    //                label: {
-                    //                    //position: 'inner',
-                    //                    formatter: '{b}\n{d}%',
-
-                    //                },
-                    //                data: res,
-                    //                emphasis: {
-                    //                    itemStyle: {
-                    //                        shadowBlur: 10,
-                    //                        shadowOffsetX: 0,
-                    //                        shadowColor: 'rgba(0, 0, 0, 0.5)'
-                    //                    }
-                    //                }
-                    //            }
-                    //        ]
-                    //    };
-                    //    lex_Chart.setOption(option);
-                    //})
-                    //.catch((err) => {
-                    //    var errInfo = '<div class="desc">No Data</div>';
-                    //    errInfo += '<div class="card-body">' + err + '</div >';
-                    //    $("#lex_echart").html(errInfo);
-                    //});
+                    .then((res) => {
+                        option = {
+                            color: ['#fc8452', '#5470c6', '#91cc75', '#fac858', '#ee6666', '#73c0de', '#3ba272', '#9a60b4', '#ea7ccc'],
+                            title: {
+                                text: '8小时等效声级月总览图',
+                                left: '10px',
+                                top: '10px',
+                                color: '#5D5F63',
+                            },
+                            toolbox: {
+                                show: true,
+                                feature: {
+                                    dataZoom: {
+                                        yAxisIndex: 'none'
+                                    },
+                                    dataView: { readOnly: false },
+                                    //magicType: { type: ['line', 'bar'] },
+                                    restore: {},
+                                    saveAsImage: {}
+                                }
+                            },
+                            tooltip: {
+                                trigger: 'axis',
+                                //formatter: '{a} <br/>{b} : {c} ({d}%)'
+                            },
+                            legend: {
+                                orient: 'horizontal',  //horizontal,vertical
+                                right: 'center',
+                                top: '10px',
+                                data: res.legend,
+                            },
+                            xAxis: {
+                                type: 'category',
+                                boundaryGap: false,
+                                data: res.xAxis,
+                            },
+                            yAxis: {
+                                type: 'value',
+                                axisLabel: {
+                                    formatter: '{value} dB(A)',
+                                }
+                            },
+                            series: res.value,
+                        };
+                        lex_Chart.clear() 
+                        lex_Chart.setOption(option);
+                        lex_Chart.hideLoading();
+                    })
+                    .catch((err) => {
+                        alert(err);
+                        lex_Chart.clear() 
+                        lex_Chart.hideLoading();
+                    });
             }
         }
     }

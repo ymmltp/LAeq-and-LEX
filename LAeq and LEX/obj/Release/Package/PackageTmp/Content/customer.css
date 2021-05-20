@@ -124,3 +124,9 @@ a:hover, a:focus {
     background-color: #96bb7c;
     border-color: #449d44 /*#d1d9d9*/;
 }
+
+
+/*修改bootstrap table*/
+.loading-wrap {
+    display: none;
+}
